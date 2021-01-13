@@ -1,4 +1,56 @@
 defmodule Textwrap do
+  @moduledoc """
+  `Textwrap` provides a set of functions for wrapping, indenting, and dedenting text. It wraps the Rust [`textwrap`](https://lib.rs/textwrap) crate.
+
+  ## Wrapping
+
+  Use `wrap/2` to turn a `String` into a list of `String`s each no more
+  than `width` characters long.
+
+      iex> Textwrap.wrap("foo bar baz", 3)
+      ["foo", "bar", "baz"]
+
+      iex> Textwrap.wrap("foo bar baz", 7)
+      ["foo bar", "baz"]
+
+  `fill/2` is like `wrap/2`, except that it retuns the wrapped text
+   as a single `String`.
+
+      iex> Textwrap.fill("foo bar baz", 3)
+      "foo\\nbar\\nbaz"
+
+      iex> Textwrap.fill("foo bar baz", 7)
+      "foo bar\\nbaz"
+
+  Both `wrap/2` and `fill/2` can either take the width to wrap too
+  as their second argument, or take a keyword list including a `:width`
+  key and any number of other options. See the docs for `wrap/2` for
+  details.
+
+  ## Displayed Width vs Byte Width
+
+  `Textwrap` wraps text based on measured display width, not simply counting bytes.
+  For ascii text this gives exactly the same result, but many non-ASCII characters
+  take up more than one byte in the UTF-8 encoding.
+
+  See the documentation of the [`textwrap` crate](https://docs.rs/textwrap/0.13.2/textwrap/index.html#displayed-width-vs-byte-size) for more details.
+
+  ## Terminal Width
+
+  The `width` passed to `wrap/2` or `fill/2` can either by a positive integer, or
+  the atom `:termwidth`. When standard output is connected to a terminal, passing
+  `:termwidth` will wrap the text to the width of the terminal. Otherwise, it
+  will use a width of 80 characters as a fallback.
+
+  ## Indenting and Dedenting
+
+  Use `indent/2` and `dedent/1` to indent and dedent text:
+      iex> Textwrap.indent("hello\\nworld\\n", "  ")
+      "  hello\\n  world\\n"
+
+      iex> Textwrap.dedent("  hello\\n  world\\n")
+      "hello\\nworld\\n"
+  """
   use Rustler, otp_app: :textwrap, crate: "textwrap_nif"
 
   @type wrap_opts() :: pos_integer() | :termwidth | [wrap_opt()]
