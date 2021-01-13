@@ -1,0 +1,54 @@
+version: 2.1
+workflows:
+  test-matrix:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              base-image:
+                ["cimg/elixir:1.9", "cimg/elixir:1.10", "cimg/elixir:1.11"]
+              rust-channel: ["stable", "beta", "nightly"]
+
+jobs:
+  test:
+    parameters:
+      base-image:
+        type: string
+      rust-channel:
+        type: string
+    docker:
+      - image: << parameters.base-image >>
+    steps:
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain << parameters.rust-channel >>
+      - run: cat ~/.cargo/env >> "$BASH_ENV"
+      - run: rustc --version && cargo --version
+
+      - checkout
+
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+
+      - restore_cache:
+          keys:
+            - build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.lock" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}
+            - build-<< parameters.base-image >>-<< parameters.rust-channel >>
+
+      - run: echo 'export MIX_ENV=test' >> "$BASH_ENV"
+
+      - run: mix deps.get
+      - run: mix deps.compile
+
+      - run: mix format --check-formatted
+      - run: cd native/textwrap_nif && cargo fmt -- --check
+
+      - run: mix credo -a --strict
+      - run: cd native/textwrap_nif && cargo clippy -- -D warnings
+
+      - run: mix test
+
+      - save_cache:
+          key: build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.lock" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}
+          paths:
+            - deps
+            - _build
+            - native/textwrap_nif/target

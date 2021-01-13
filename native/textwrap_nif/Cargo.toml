@@ -1,0 +1,21 @@
+[package]
+name = "textwrap_nif"
+version = "0.1.0"
+authors = ["Benjamin Fox <foxbenjaminfox@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "textwrap_nif"
+path = "src/lib.rs"
+crate-type = ["dylib"]
+
+[dependencies]
+rustler = "0.22.0-rc.0"
+
+[dependencies.textwrap]
+version = "0.13.2"
+features = ["hyphenation", "terminal_size"]
+
+[dependencies.hyphenation]
+version = "0.8.0"
+features = ["embed_en-us"]
