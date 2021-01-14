@@ -83,5 +83,29 @@ defmodule TextwrapTest do
     test "width in a keyword list" do
       assert Textwrap.fill("hello world", width: 5) == "hello\nworld"
     end
+
+    test "parity with Textwrap.wrap/2" do
+      for width <- [5, 10],
+          break_words <- [true, false],
+          initial_indent <- ["", ">"],
+          subsequent_indent <- ["", ">"],
+          splitter <- [nil, false, :en_us],
+          wrap_algorithm <- [:first_fit, :optimal_fit] do
+        opts = [
+          width: width,
+          break_words: break_words,
+          initial_indent: initial_indent,
+          subsequent_indent: subsequent_indent,
+          splitter: splitter,
+          wrap_algorithm: wrap_algorithm
+        ]
+
+        text = "elephant-rhinoceros cooperation"
+        wrapped = Textwrap.wrap(text, opts)
+        filled = Textwrap.fill(text, opts)
+
+        assert filled == Enum.join(wrapped, "\n")
+      end
+    end
   end
 end
