@@ -32,6 +32,47 @@ defmodule TextwrapTest do
                subsequent_indent: " "
              ) == [">foo", " bar", " baz"]
     end
+
+    test "wrap algorithm" do
+      assert Textwrap.wrap("To be, or not to be, that is the question.", width: 10) ==
+               ["To be,", "or not to", "be, that", "is the", "question."]
+
+      assert Textwrap.wrap(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: :optimal_fit
+             ) == ["To be,", "or not to", "be, that", "is the", "question."]
+
+      assert Textwrap.wrap(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: :first_fit
+             ) == ["To be, or", "not to be,", "that is", "the", "question."]
+    end
+
+    test "splitter" do
+      assert Textwrap.wrap("elephant", width: 6) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, splitter: nil) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, splitter: false) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, splitter: :en_us) == ["ele-", "phant"]
+
+      assert Textwrap.wrap("cooperation", width: 6) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6) == ["co-", "operat", "ion"]
+
+      assert Textwrap.wrap("cooperation", width: 6, splitter: nil) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6, splitter: nil) == ["co-", "operat", "ion"]
+
+      assert Textwrap.wrap("cooperation", width: 6, splitter: false) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6, splitter: false) == ["co-ope", "ration"]
+
+      assert Textwrap.wrap("cooperation", width: 6, splitter: :en_us) == ["coop-", "era-", "tion"]
+
+      assert Textwrap.wrap("co-operation", width: 6, splitter: :en_us) == [
+               "co-",
+               "opera-",
+               "tion"
+             ]
+    end
   end
 
   describe "Textwrap.fill/2" do
