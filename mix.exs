@@ -56,6 +56,7 @@ defmodule Textwrap.MixProject do
   def package() do
     [
       maintainers: "Benjamin Fox",
+      licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/foxbenjaminfox/ex_textwrap"}
     ]
   end
