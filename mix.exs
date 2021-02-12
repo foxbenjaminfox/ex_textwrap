@@ -4,7 +4,7 @@ defmodule Textwrap.MixProject do
   def project do
     [
       app: :textwrap,
-      version: "0.1.0",
+      version: "0.1.0-rc.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -57,7 +57,16 @@ defmodule Textwrap.MixProject do
     [
       maintainers: "Benjamin Fox",
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/foxbenjaminfox/ex_textwrap"}
+      links: %{"GitHub" => "https://github.com/foxbenjaminfox/ex_textwrap"},
+      files: [
+        "lib",
+        "mix.exs",
+        "README.md",
+        "LICENSE",
+        ".formatter.exs",
+        "native/textwrap_nif/Cargo.*",
+        "native/textwrap_nif/src"
+      ]
     ]
   end
 end

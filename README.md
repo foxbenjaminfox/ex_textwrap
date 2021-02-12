@@ -10,7 +10,7 @@ by adding `textwrap` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:textwrap, "~> 0.1.0"}
+    {:textwrap, "~> 0.1.0-rc.0"}
   ]
 end
 ```
