@@ -56,7 +56,7 @@ defmodule Textwrap do
   @type wrap_opts() :: pos_integer() | :termwidth | [wrap_opt()]
   @type wrap_opt() ::
           {:width, pos_integer() | :termwidth}
-          | {:break_words, bool()}
+          | {:break_words, boolean()}
           | {:initial_indent, String.t()}
           | {:splitter, nil | :en_us | false}
           | {:subsequent_indent, String.t()}
