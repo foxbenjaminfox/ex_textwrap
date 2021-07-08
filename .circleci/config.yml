@@ -6,7 +6,7 @@ workflows:
           matrix:
             parameters:
               base-image:
-                ["cimg/elixir:1.9", "cimg/elixir:1.10", "cimg/elixir:1.11"]
+                ["cimg/elixir:1.9", "cimg/elixir:1.10", "cimg/elixir:1.11", "cimg/elixir:1.12"]
               rust-channel: ["stable", "beta", "nightly"]
 
 jobs:
