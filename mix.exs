@@ -8,7 +8,7 @@ defmodule Textwrap.MixProject do
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      compilers: [:rustler] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       rustler_crates: [
         textwrap_nif: [
           mode: rustc_mode(Mix.env())
@@ -31,7 +31,7 @@ defmodule Textwrap.MixProject do
 
   defp deps do
     [
-      {:rustler, "~> 0.22.0-rc.0"},
+      {:rustler, "~> 0.22.0"},
       {:credo, "~> 1.5.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false}

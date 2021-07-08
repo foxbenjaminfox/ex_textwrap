@@ -219,11 +219,9 @@ defmodule Textwrap do
 
   Any leading and trailing whitespace on non-empty lines is left unchanged.
 
-  The returned string will always end with a newline.
-
   Examples:
       iex> Textwrap.indent("hello world", ">")
-      ">hello world\\n"
+      ">hello world"
 
       iex> Textwrap.indent("foo\\nbar\\nbaz\\n", "  ")
       "  foo\\n  bar\\n  baz\\n"
