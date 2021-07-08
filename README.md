@@ -1,5 +1,12 @@
 # Textwrap
 
+<p align="center">
+  <img src="https://img.shields.io/circleci/build/github/foxbenjaminfox/ex_textwrap">
+  <img src="https://img.shields.io/hexpm/v/textwrap">
+  <img src="https://img.shields.io/hexpm/dt/textwrap">
+  <img src="https://img.shields.io/github/license/foxbenjaminfox/ex_textwrap">
+</p>
+
 Textwrap is a set of NIF bindings to the [`textwrap`](https://github.com/mgeisler/textwrap) Rust crate, for wrapping, indenting, and dedenting text.
 
 ## Installation
