@@ -31,7 +31,7 @@ pub fn fill_nif(text: &str, width: usize, opts: ListIterator<'_>) -> NifResult<S
 #[rustler::nif]
 pub fn wrap_nif(text: &str, width: usize, opts: ListIterator<'_>) -> NifResult<Vec<String>> {
     let options = wrap_options(width, opts)?;
-    Ok(textwrap::wrap(&text, options)
+    Ok(textwrap::wrap(text, options)
         .into_iter()
         .map(Cow::into_owned)
         .collect())
