@@ -13,8 +13,8 @@ crate-type = ["dylib"]
 rustler = "0.37.0"
 
 [dependencies.textwrap]
-version = "0.13.4"
-features = ["hyphenation", "terminal_size"]
+version = "0.16.2"
+features = ["hyphenation", "terminal_size", "smawk"]
 
 [dependencies.hyphenation]
 version = "0.8.4"

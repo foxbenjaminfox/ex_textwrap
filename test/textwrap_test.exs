@@ -50,6 +50,30 @@ defmodule TextwrapTest do
              ) == ["To be, or", "not to be,", "that is", "the", "question."]
     end
 
+    test "word_splitter" do
+      assert Textwrap.wrap("elephant", width: 6) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, word_splitter: nil) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, word_splitter: false) == ["elepha", "nt"]
+      assert Textwrap.wrap("elephant", width: 6, word_splitter: :en_us) == ["ele-", "phant"]
+
+      assert Textwrap.wrap("cooperation", width: 6) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6) == ["co-", "operat", "ion"]
+
+      assert Textwrap.wrap("cooperation", width: 6, word_splitter: nil) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6, word_splitter: nil) == ["co-", "operat", "ion"]
+
+      assert Textwrap.wrap("cooperation", width: 6, word_splitter: false) == ["cooper", "ation"]
+      assert Textwrap.wrap("co-operation", width: 6, word_splitter: false) == ["co-ope", "ration"]
+
+      assert Textwrap.wrap("cooperation", width: 6, word_splitter: :en_us) == ["coop-", "era-", "tion"]
+
+      assert Textwrap.wrap("co-operation", width: 6, word_splitter: :en_us) == [
+               "co-",
+               "opera-",
+               "tion"
+             ]
+    end
+
     test "splitter" do
       assert Textwrap.wrap("elephant", width: 6) == ["elepha", "nt"]
       assert Textwrap.wrap("elephant", width: 6, splitter: nil) == ["elepha", "nt"]

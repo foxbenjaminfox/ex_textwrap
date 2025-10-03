@@ -58,9 +58,11 @@ defmodule Textwrap do
           {:width, pos_integer() | :termwidth}
           | {:break_words, boolean()}
           | {:initial_indent, String.t()}
-          | {:splitter, nil | :en_us | false}
+          | {:word_splitter, nil | :en_us | false}
           | {:subsequent_indent, String.t()}
           | {:wrap_algorithm, wrap_algorithm()}
+          # Depecrated, kept for backwards compatibility
+          | {:splitter, nil | :en_us | false}
   @type wrap_algorithm() :: :first_fit | :optimal_fit
 
   @spec wrap(text :: String.t(), opts :: wrap_opts()) :: [String.t()]
@@ -82,7 +84,7 @@ defmodule Textwrap do
      - `:break_words` — allow long words to be broken, if they won't fit on a single line. Setting this to false may cause some lines to be longer than `:width`.
      - `:inital_indent` — will be added as a prefix to the first line of the result.
      - `:subsequent_indent` — will be added as a prefix to each line other than the first line of the result.
-     - `:splitter` — when set to `false`, hyphens within words won't be treated specially as a place to split words. When set to `:en_us`, a language-aware hyphenation system will be used to try to break words in appropriate places.
+     - `:word_splitter` — when set to `false`, hyphens within words won't be treated specially as a place to split words. When set to `:en_us`, a language-aware hyphenation system will be used to try to break words in appropriate places.
      - `:wrap_algorithm` — by default, or when set to `:optimal_fit`, `wrap/2` will do its best to
         balance the gaps left at the ends of lines. When set to `:first_fit`, a simpler greedy algorithm
         is used instead. See the docs in the [`textwrap` crate](https://docs.rs/textwrap/0.13.2/textwrap/core/enum.WrapAlgorithm.html) for more details.
@@ -100,7 +102,7 @@ defmodule Textwrap do
       iex> Textwrap.wrap("Antidisestablishmentarianism", width: 10, break_words: false)
       ["Antidisestablishmentarianism"]
 
-      iex> Textwrap.wrap("Antidisestablishmentarianism", width: 10, splitter: :en_us)
+      iex> Textwrap.wrap("Antidisestablishmentarianism", width: 10, word_splitter: :en_us)
       ["Antidis-", "establish-", "mentarian-", "ism"]
 
       iex> Textwrap.wrap("foo bar baz",
@@ -155,7 +157,7 @@ defmodule Textwrap do
       iex> Textwrap.fill("Antidisestablishmentarianism", width: 10, break_words: false)
       "Antidisestablishmentarianism"
 
-      iex> Textwrap.fill("Antidisestablishmentarianism", width: 10, splitter: :en_us)
+      iex> Textwrap.fill("Antidisestablishmentarianism", width: 10, word_splitter: :en_us)
       "Antidis-\\nestablish-\\nmentarian-\\nism"
 
       iex> Textwrap.fill("foo bar baz",

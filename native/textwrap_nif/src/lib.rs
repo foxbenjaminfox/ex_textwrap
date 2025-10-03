@@ -2,14 +2,14 @@ use hyphenation::{Language, Load, Standard};
 use rustler::types::{atom::false_, atom::nil, Atom};
 use rustler::{Error, ListIterator, NifResult, Term};
 use std::borrow::Cow;
-use textwrap::core::WrapAlgorithm;
-use textwrap::{HyphenSplitter, NoHyphenation, WordSplitter};
+use textwrap::{wrap_algorithms::Penalties, WordSplitter, WrapAlgorithm};
 
 mod atom {
     rustler::atoms! {
         break_words,
         initial_indent,
         splitter,
+        word_splitter,
         subsequent_indent,
         wrap_algorithm,
 
@@ -19,8 +19,6 @@ mod atom {
         en_us,
     }
 }
-
-type TextwrapOptions<'a> = textwrap::Options<'a, Box<dyn WordSplitter>>;
 
 #[rustler::nif]
 pub fn fill_nif(text: &str, width: usize, opts: ListIterator<'_>) -> NifResult<String> {
@@ -52,9 +50,8 @@ pub fn termwidth() -> usize {
     textwrap::termwidth()
 }
 
-fn wrap_options<'a>(width: usize, opts: ListIterator<'a>) -> NifResult<TextwrapOptions<'a>> {
-    let mut options: TextwrapOptions =
-        textwrap::Options::with_splitter(width, Box::new(HyphenSplitter));
+fn wrap_options<'a>(width: usize, opts: ListIterator<'a>) -> NifResult<textwrap::Options<'a>> {
+    let mut options = textwrap::Options::new(width);
 
     for opt in opts {
         match opt.decode::<(Atom, Term)>()? {
@@ -73,20 +70,20 @@ fn wrap_options<'a>(width: usize, opts: ListIterator<'a>) -> NifResult<TextwrapO
                 if wrap_alorithm == atom::first_fit() {
                     options.wrap_algorithm = WrapAlgorithm::FirstFit;
                 } else if wrap_alorithm == atom::optimal_fit() {
-                    options.wrap_algorithm = WrapAlgorithm::OptimalFit;
+                    options.wrap_algorithm = WrapAlgorithm::OptimalFit(Penalties::default());
                 } else {
                     return Err(Error::BadArg);
                 }
             }
-            (opt, splitter) if opt == atom::splitter() => {
+            (opt, splitter) if opt == atom::splitter() || opt == atom::word_splitter() => {
                 let splitter: Atom = splitter.decode()?;
                 if splitter == false_() {
-                    options.splitter = Box::new(NoHyphenation);
+                    options.word_splitter = WordSplitter::NoHyphenation;
                 } else if splitter == nil() {
-                    options.splitter = Box::new(HyphenSplitter);
+                    options.word_splitter = WordSplitter::HyphenSplitter;
                 } else if splitter == atom::en_us() {
-                    options.splitter =
-                        Box::new(Standard::from_embedded(Language::EnglishUS).unwrap());
+                    let dictionary = Standard::from_embedded(Language::EnglishUS).unwrap();
+                    options.word_splitter = WordSplitter::Hyphenation(dictionary);
                 } else {
                     return Err(Error::BadArg);
                 }
