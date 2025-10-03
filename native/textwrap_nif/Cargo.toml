@@ -13,9 +13,9 @@ crate-type = ["dylib"]
 rustler = "0.37.0"
 
 [dependencies.textwrap]
-version = "0.13.2"
+version = "0.13.4"
 features = ["hyphenation", "terminal_size"]
 
 [dependencies.hyphenation]
-version = "0.8.0"
+version = "0.8.4"
 features = ["embed_en-us"]

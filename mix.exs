@@ -32,7 +32,7 @@ defmodule Textwrap.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.37.0"},
-      {:credo, "~> 1.5.5", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7.12", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false}
     ]
