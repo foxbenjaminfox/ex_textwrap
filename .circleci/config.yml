@@ -6,7 +6,12 @@ workflows:
           matrix:
             parameters:
               base-image:
-                ["cimg/elixir:1.9", "cimg/elixir:1.10", "cimg/elixir:1.11", "cimg/elixir:1.12"]
+                [
+                  "cimg/elixir:1.15",
+                  "cimg/elixir:1.16",
+                  "cimg/elixir:1.17.3-erlang-27.2.2",
+                  "cimg/elixir:1.18.4-erlang-27.2.2",
+                ]
               rust-channel: ["stable", "beta", "nightly"]
 
 jobs:
@@ -30,7 +35,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.lock" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}
+            - build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.exs" }}-{{ checksum "mix.lock" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}
             - build-<< parameters.base-image >>-<< parameters.rust-channel >>
 
       - run: echo 'export MIX_ENV=test' >> "$BASH_ENV"
@@ -44,10 +49,12 @@ jobs:
       - run: mix credo -a --strict
       - run: cd native/textwrap_nif && cargo clippy -- -D warnings
 
+      - run: rm -rf _build/test/lib/textwrap
+      - run: mix compile
       - run: mix test
 
       - save_cache:
-          key: build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.lock" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}
+          key: build-<< parameters.base-image >>-<< parameters.rust-channel >>-{{ checksum "mix.lock" }}-{{ checksum "mix.exs" }}-{{ checksum "native/textwrap_nif/Cargo.lock" }}-{{ checksum "native/textwrap_nif/Cargo.toml" }}
           paths:
             - deps
             - _build

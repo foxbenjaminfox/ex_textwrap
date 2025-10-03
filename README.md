@@ -25,7 +25,7 @@ by adding `textwrap` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:textwrap, "~> 0.3.0"}
+    {:textwrap, "~> 0.4.0"}
   ]
 end
 ```

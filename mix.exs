@@ -4,16 +4,11 @@ defmodule Textwrap.MixProject do
   def project do
     [
       app: :textwrap,
-      version: "0.3.0",
-      elixir: "~> 1.9",
+      version: "0.4.0",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       compilers: Mix.compilers(),
-      rustler_crates: [
-        textwrap_nif: [
-          mode: rustc_mode(Mix.env())
-        ]
-      ],
       name: "Textwrap",
       source_url: "https://github.com/foxbenjaminfox/ex_textwrap",
       homepage_url: "https://github.com/foxbenjaminfox/ex_textwrap",
@@ -37,9 +32,6 @@ defmodule Textwrap.MixProject do
       {:ex_doc, "~> 0.23", only: :dev, runtime: false}
     ]
   end
-
-  defp rustc_mode(:prod), do: :release
-  defp rustc_mode(_), do: :debug
 
   defp docs() do
     [

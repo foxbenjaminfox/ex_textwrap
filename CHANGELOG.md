@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.0] - 2025-10-03
+
+### Changed
+- Minimum Elixir version set to 1.15 (actually required as of 0.2.0)
+
 ## [0.3.0] - 2025-10-03
 
 ### Added
