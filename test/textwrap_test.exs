@@ -86,12 +86,21 @@ defmodule TextwrapTest do
       assert Textwrap.wrap("co-operation", width: 6) == ["co-", "operat", "ion"]
 
       assert Textwrap.wrap("cooperation", width: 6, word_splitter: nil) == ["cooper", "ation"]
-      assert Textwrap.wrap("co-operation", width: 6, word_splitter: nil) == ["co-", "operat", "ion"]
+
+      assert Textwrap.wrap("co-operation", width: 6, word_splitter: nil) == [
+               "co-",
+               "operat",
+               "ion"
+             ]
 
       assert Textwrap.wrap("cooperation", width: 6, word_splitter: false) == ["cooper", "ation"]
       assert Textwrap.wrap("co-operation", width: 6, word_splitter: false) == ["co-ope", "ration"]
 
-      assert Textwrap.wrap("cooperation", width: 6, word_splitter: :en_us) == ["coop-", "era-", "tion"]
+      assert Textwrap.wrap("cooperation", width: 6, word_splitter: :en_us) == [
+               "coop-",
+               "era-",
+               "tion"
+             ]
 
       assert Textwrap.wrap("co-operation", width: 6, word_splitter: :en_us) == [
                "co-",
@@ -154,7 +163,11 @@ defmodule TextwrapTest do
           initial_indent <- ["", ">"],
           subsequent_indent <- ["", ">"],
           splitter <- [nil, false, :en_us],
-        wrap_algorithm <- [:first_fit, :optimal_fit, {:optimal_fit, %{nline_penalty: 50, overflow_penalty: 50, hyphen_penalty: 5000}} ] do
+          wrap_algorithm <- [
+            :first_fit,
+            :optimal_fit,
+            {:optimal_fit, %{nline_penalty: 50, overflow_penalty: 50, hyphen_penalty: 5000}}
+          ] do
         opts = [
           width: width,
           break_words: break_words,
