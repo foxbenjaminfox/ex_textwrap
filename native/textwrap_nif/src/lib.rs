@@ -52,7 +52,7 @@ pub fn termwidth() -> usize {
     textwrap::termwidth()
 }
 
-fn wrap_options(width: usize, opts: ListIterator<'_>) -> NifResult<TextwrapOptions> {
+fn wrap_options<'a>(width: usize, opts: ListIterator<'a>) -> NifResult<TextwrapOptions<'a>> {
     let mut options: TextwrapOptions =
         textwrap::Options::with_splitter(width, Box::new(HyphenSplitter));
 
@@ -98,7 +98,4 @@ fn wrap_options(width: usize, opts: ListIterator<'_>) -> NifResult<TextwrapOptio
     Ok(options)
 }
 
-rustler::init!(
-    "Elixir.Textwrap",
-    [dedent, fill_nif, indent, termwidth, wrap_nif]
-);
+rustler::init!("Elixir.Textwrap");
