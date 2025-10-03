@@ -63,7 +63,14 @@ defmodule Textwrap do
           | {:wrap_algorithm, wrap_algorithm()}
           # Depecrated, kept for backwards compatibility
           | {:splitter, nil | :en_us | false}
-  @type wrap_algorithm() :: :first_fit | :optimal_fit
+  @type wrap_algorithm() :: :first_fit | :optimal_fit | {:optimal_fit, penalties()}
+  @type penalties() :: %{
+          optional(:nline_penalty) => non_neg_integer(),
+          optional(:overflow_penalty) => non_neg_integer(),
+          optional(:short_last_line_fraction) => non_neg_integer(),
+          optional(:short_last_line_penalty) => non_neg_integer(),
+          optional(:hyphen_penalty) => non_neg_integer()
+        }
 
   @spec wrap(text :: String.t(), opts :: wrap_opts()) :: [String.t()]
 
@@ -87,7 +94,12 @@ defmodule Textwrap do
      - `:word_splitter` — when set to `false`, hyphens within words won't be treated specially as a place to split words. When set to `:en_us`, a language-aware hyphenation system will be used to try to break words in appropriate places.
      - `:wrap_algorithm` — by default, or when set to `:optimal_fit`, `wrap/2` will do its best to
         balance the gaps left at the ends of lines. When set to `:first_fit`, a simpler greedy algorithm
-        is used instead. See the docs in the [`textwrap` crate](https://docs.rs/textwrap/0.13.2/textwrap/core/enum.WrapAlgorithm.html) for more details.
+        is used instead. You can also pass `{:optimal_fit, penalties}` where `penalties` is a map
+        containing custom penalty values to override the defaults (which are suitable for monospace fonts).
+        This allows you to tune the algorithm for proportional fonts. See the
+        [Penalties documentation](https://docs.rs/textwrap/0.16.2/textwrap/wrap_algorithms/struct.Penalties.html)
+        for details on the available penalty fields. For more on the algorithms, see the
+        [`textwrap` crate docs](https://docs.rs/textwrap/0.16.2/textwrap/wrap_algorithms/enum.WrapAlgorithm.html).
 
   ## Examples
       iex> Textwrap.wrap("hello world", 5)

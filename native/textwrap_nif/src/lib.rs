@@ -2,8 +2,9 @@ use hyphenation::{Language, Load, Standard};
 use rustler::types::{atom::false_, atom::nil, Atom};
 use rustler::{Error, ListIterator, NifResult, Term};
 use std::borrow::Cow;
-use textwrap::{wrap_algorithms::Penalties, WordSplitter, WrapAlgorithm};
+use textwrap::WordSplitter;
 
+mod wrap_algorithm;
 mod atom {
     rustler::atoms! {
         break_words,
@@ -17,6 +18,12 @@ mod atom {
         optimal_fit,
 
         en_us,
+
+        nline_penalty,
+        overflow_penalty,
+        short_last_line_fraction,
+        short_last_line_penalty,
+        hyphen_penalty,
     }
 }
 
@@ -65,15 +72,7 @@ fn wrap_options<'a>(width: usize, opts: ListIterator<'a>) -> NifResult<textwrap:
                 options.break_words = break_words.decode()?;
             }
             (opt, wrap_algorithm) if opt == atom::wrap_algorithm() => {
-                let wrap_alorithm: Atom = wrap_algorithm.decode()?;
-
-                if wrap_alorithm == atom::first_fit() {
-                    options.wrap_algorithm = WrapAlgorithm::FirstFit;
-                } else if wrap_alorithm == atom::optimal_fit() {
-                    options.wrap_algorithm = WrapAlgorithm::OptimalFit(Penalties::default());
-                } else {
-                    return Err(Error::BadArg);
-                }
+                options.wrap_algorithm = wrap_algorithm::wrap_algorithm_from_term(wrap_algorithm)?;
             }
             (opt, splitter) if opt == atom::splitter() || opt == atom::word_splitter() => {
                 let splitter: Atom = splitter.decode()?;

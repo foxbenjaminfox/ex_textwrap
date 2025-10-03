@@ -50,6 +50,32 @@ defmodule TextwrapTest do
              ) == ["To be, or", "not to be,", "that is", "the", "question."]
     end
 
+    test "wrap algorithm with custom penalties" do
+      assert Textwrap.wrap(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: {:optimal_fit, %{}}
+             ) == ["To be,", "or not to", "be, that", "is the", "question."]
+
+      assert Textwrap.wrap(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: {:optimal_fit, %{overflow_penalty: 1}}
+             ) == ["To be, or not to be, that is the question."]
+
+      assert Textwrap.wrap(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm:
+                 {:optimal_fit,
+                  %{
+                    nline_penalty: 50,
+                    overflow_penalty: 50,
+                    hyphen_penalty: 5000
+                  }}
+             ) == ["To be, or", "not to be,", "that is the", "question."]
+    end
+
     test "word_splitter" do
       assert Textwrap.wrap("elephant", width: 6) == ["elepha", "nt"]
       assert Textwrap.wrap("elephant", width: 6, word_splitter: nil) == ["elepha", "nt"]
@@ -108,13 +134,27 @@ defmodule TextwrapTest do
       assert Textwrap.fill("hello world", width: 5) == "hello\nworld"
     end
 
+    test "with custom penalties" do
+      assert Textwrap.fill(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: {:optimal_fit, %{}}
+             ) == "To be,\nor not to\nbe, that\nis the\nquestion."
+
+      assert Textwrap.fill(
+               "To be, or not to be, that is the question.",
+               width: 10,
+               wrap_algorithm: {:optimal_fit, %{overflow_penalty: 1}}
+             ) == "To be, or not to be, that is the question."
+    end
+
     test "parity with Textwrap.wrap/2" do
       for width <- [5, 10],
           break_words <- [true, false],
           initial_indent <- ["", ">"],
           subsequent_indent <- ["", ">"],
           splitter <- [nil, false, :en_us],
-          wrap_algorithm <- [:first_fit, :optimal_fit] do
+        wrap_algorithm <- [:first_fit, :optimal_fit, {:optimal_fit, %{nline_penalty: 50, overflow_penalty: 50, hyphen_penalty: 5000}} ] do
         opts = [
           width: width,
           break_words: break_words,
