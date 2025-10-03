@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0] - 2025-10-03
+
+### Added
+- An `{:optimal_fit, penalties}` wrap algorithm option which allows specifying custom penalties for the optimal fit algorithm.
+
 ## [0.2.0] - 2025-10-03
 
 ### Added
